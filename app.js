@@ -13,7 +13,7 @@ const app = express();
 // connection to DB
 mongoose
   .connect(
-    `mongodb+srv://lawrence:UF6mc1seQupQloUC@cluster0-qn38b.mongodb.net/test?retryWrites=true&w=majority`,
+    process.env.MONGO_URI,
     { useUnifiedTopology: true, useNewUrlParser: true }
   )
   .then(() => {
@@ -46,6 +46,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/images", express.static(path.join("images")));
 app.use(cors());
+
+app.get('/test', (req, res) => {
+  res.send('Ok');
+})
 
 app.use("/api/posts", postsRoutes);
 app.use("/api/user", userRoutes);
