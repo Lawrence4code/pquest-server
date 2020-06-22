@@ -23,9 +23,7 @@ mongoose
     console.log("Connection to db failed!", err);
   });
 
-// mongoose depcreation warning, remove in prod verison
 
-//TODO:
 mongoose.set('useCreateIndex', true);
 
 mongoose.set('useFindAndModify', false);

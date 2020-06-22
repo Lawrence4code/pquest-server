@@ -5,14 +5,16 @@ const User = require("../models/user");
 
 require('dotenv').config()
 
-console.log('process.env.JWT_KEY', process.env.JWT_KEY);
 
 // sign up logic
 exports.createUser = (req, res, next) => {
-  bcrypt.hash(req.body.password, 10).then(hash => {
+  let { name, email, password } = req.body;
+  name = name.toLowerCase();
+  email = email.toLowerCase();
+  bcrypt.hash(password, 10).then(hash => {
     const user = new User({
-      name: req.body.name,
-      email: req.body.email,
+      name,
+      email,
       password: hash
     });
     user
@@ -32,9 +34,7 @@ exports.createUser = (req, res, next) => {
 
 // login logic
 exports.userLogin = (req, res, next) => {
-  console.log('userLogin ttt')
   let fetchedUser;
-  console.log(req.body);
   User.findOne({ email: req.body.email })
     .then(user => {
       if (!user) {
@@ -47,28 +47,26 @@ exports.userLogin = (req, res, next) => {
       if (!result) {
         return res.status(401).json({ message: "Incorrect Password!" });
       }
-      console.log('process.env.JWT_KEY', process.env.JWT_KEY)
       const token = jwt.sign(
         {
-          email: fetchedUser.email,
-          userId: fetchedUser._id,
-          name: fetchedUser.name
+          email: fetchedUser && fetchedUser.email,
+          userId: fetchedUser && fetchedUser._id,
+          name: fetchedUser && fetchedUser.name
         },
         process.env.JWT_KEY,
-        { expiresIn: "100h" }
+        { expiresIn: "10h" }
       );
 
-      res
+      return res
         .status(200)
         .json({
           message: "Login Success",
           token: token,
           expiresIn: 36000000,
-          userId: fetchedUser._id
+          userId: fetchedUser && fetchedUser._id
         });
     })
     .catch(error => {
-      console.log('error', error)
       return res
         .status(401)
         .json({ message: "Invalid authentication credentials!" });
