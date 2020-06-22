@@ -67,7 +67,7 @@ exports.userLogin = (req, res, next) => {
           userId: fetchedUser && fetchedUser._id
         });
     })
-    .catch(error => {
+    .catch(err => {
       console.log('err!!!', err)
       return res
         .status(401)
