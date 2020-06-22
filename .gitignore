@@ -51,4 +51,3 @@ nodemon.json
 
 # Env/senitive Files
 .env
-/images
